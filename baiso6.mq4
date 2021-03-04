@@ -18,7 +18,7 @@ extern string ghichu = "hello";
 extern color maucualenh = clrGreen;
 extern int doTruotGia = 20;
 datetime thoigiangiaodich;
-
+int magic = 999;
       
 //+------------------------------------------------------------------+
 int OnInit()
@@ -42,7 +42,11 @@ void OnDeinit(const int reason)
 void OnTick()
   {
 //---
-      if(OrdersTotal() > 0){return;}
+      //if(OrdersTotal() > 0){return;}
+      
+      int count = demsolenh(Symbol());
+      Comment(Symbol() + ": " + count);
+      if(count > 0){return;}
       
       // vao lenh vao dau cay nen moi
       datetime current = iTime(Symbol(), 0, 0);
@@ -71,7 +75,7 @@ void OnTick()
       
       dinhdangLot();
       
-      OrderSend(Symbol(), loaiLenh, khoiLuong, giavaolenh, doTruotGia, stoploss, takeprofit, ghichu, 0, 0, maucualenh);
+      OrderSend(Symbol(), loaiLenh, khoiLuong, giavaolenh, doTruotGia, stoploss, takeprofit, ghichu, magic, 0, maucualenh);
   }
 //+------------------------------------------------------------------+
 
@@ -93,4 +97,17 @@ void checkLicense()
    {
       Alert("Hay click vao trade allow");
    }
+}
+int demsolenh(string symbol)
+{
+   int count = 0;
+   for(int i = OrdersTotal()-1; i>= 0; i--)
+   {
+      if(OrderSelect(i, SELECT_BY_POS)==False) {continue;}
+      if(OrderSymbol() != symbol) {continue;}
+      if(OrderMagicNumber() != magic) {continue;}
+      
+      count ++;
+   }
+   return count;
 }
